@@ -5,29 +5,31 @@ using UnityEngine;
 public class Projectile : MonoBehaviour
 {
     public float speed = 5f;
+    private Vector2 direction;
+    private Vector2 targetDirection;
     private Transform target;
 
     void Start()
     {
-        FindClosestEnemy();
+        FindClosestEnemyDirection();
+        Destroy(gameObject, 5f);
+        if (target != null)
+        {
+            targetDirection = (target.position - transform.position).normalized;
+        }
     }
 
     void Update()
     {
-        if (target == null)
-        {
-            Destroy(gameObject);
-            return;
-        }
-
-        Vector2 direction = (target.position - transform.position).normalized;
         transform.position += (Vector3)(direction * speed * Time.deltaTime);
+
 
         float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
         transform.rotation = Quaternion.Euler(0, 0, angle);
     }
 
-    void FindClosestEnemy()
+
+    void FindClosestEnemyDirection()
     {
         GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
         float minDistance = Mathf.Infinity;
@@ -43,17 +45,26 @@ public class Projectile : MonoBehaviour
             }
         }
 
-        target = closest;
+        if (closest != null)
+        {
+            direction = (closest.position - transform.position).normalized;
+        }
+        else
+        {
+
+            direction = transform.right;
+        }
     }
 
-   void OnTriggerEnter2D(Collider2D collision)
+    public void SetDirection(Vector2 dir)
     {
-        Debug.Log("Trigger con: " + collision.name);  // Verifica cosa tocchi
+        direction = dir.normalized;
+    }
 
+    void OnTriggerEnter2D(Collider2D collision)
+    {
         if (collision.CompareTag("Enemy"))
         {
-            Debug.Log("Colpito un nemico!");
-
             Enemy enemy = collision.GetComponent<Enemy>();
             if (enemy != null)
             {
@@ -64,15 +75,9 @@ public class Projectile : MonoBehaviour
         }
     }
 
-    void OnCollisionEnter2D(Collision2D collision)
-    {
-        Debug.Log("Collisione rigida con: " + collision.gameObject.name);
-    }
-
     void OnBecameInvisible()
     {
         Destroy(gameObject);
     }
+
 }
-
-

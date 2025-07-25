@@ -8,6 +8,8 @@ public class Enemy : MonoBehaviour
     private Transform player;
     private EnemyAnimation anim;
     public EnemySpawner spawner;
+    private bool isDead = false;
+
 
     void Start()
     {
@@ -26,9 +28,9 @@ public class Enemy : MonoBehaviour
         anim = GetComponent<EnemyAnimation>();
     }
 
-    void Update()
+   void Update()
     {
-        if (player == null) return;
+        if (player == null || isDead) return; 
 
         Vector2 dir = (player.position - transform.position).normalized;
         transform.position += (Vector3)(dir * speed * Time.deltaTime);
@@ -36,17 +38,22 @@ public class Enemy : MonoBehaviour
         anim.PlayRun(true);
     }
 
-    public void Die()
+   public void Die()
     {
+        if (isDead) return;
+        isDead = true;
+
         anim.PlayDeath();
-        Destroy(gameObject, 0.5f);
+        GetComponent<Collider2D>().enabled = false;
+        spawner?.EnemyDied();
+        Destroy(gameObject, 1f);
     }
 
     void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.CompareTag("Projectile"))
         {
-            anim.PlayHurt();
+            //anim.PlayHurt();
             spawner?.EnemyDied();
             Die();
         }

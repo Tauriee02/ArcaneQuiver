@@ -665,7 +665,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   projectilePrefab: {fileID: 4663651280176129303, guid: dd021660fc6ba2741b009cdac0cfe21d, type: 3}
   firePoint: {fileID: 1878091792}
-  fireRate: 1
+  fireRate: 0.5
 --- !u!1 &1878091791
 GameObject:
   m_ObjectHideFlags: 0
@@ -691,7 +691,7 @@ Transform:
   m_GameObject: {fileID: 1878091791}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.3, z: 0}
+  m_LocalPosition: {x: -0.009, y: 0.023, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

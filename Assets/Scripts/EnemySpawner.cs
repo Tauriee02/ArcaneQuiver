@@ -5,8 +5,8 @@ using UnityEngine;
 public class EnemySpawner : MonoBehaviour
 {
     public GameObject enemyPrefab;
-    public float spawnInterval = 3f;
-    public int maxEnemies = 5;
+    public float spawnInterval = 1f;
+    public int maxEnemies = 10;
 
     public int currentEnemies = 0; 
 

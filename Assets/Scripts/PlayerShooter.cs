@@ -9,7 +9,7 @@ public class PlayerShooter : MonoBehaviour
     public float fireRate = 1f;
 
     private float nextFireTime = 0f;
-    private Vector2 lastDirection = Vector2.down; // direzione iniziale
+    private Vector2 lastDirection = Vector2.down;
 
     void Update()
     {
@@ -29,6 +29,6 @@ public class PlayerShooter : MonoBehaviour
     void Shoot()
     {
         GameObject projectile = Instantiate(projectilePrefab, firePoint.position, Quaternion.identity);
-        projectile.GetComponent<Projectile>().direction = lastDirection;
+        
     }
 }

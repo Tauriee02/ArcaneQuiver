@@ -12,9 +12,9 @@ GameObject:
   - component: {fileID: 6437232251314844671}
   - component: {fileID: 8385033973200428744}
   - component: {fileID: 9130286879591124840}
-  - component: {fileID: 8307636806745829591}
-  - component: {fileID: 2429231199589518518}
   - component: {fileID: 7963989096007753196}
+  - component: {fileID: 839915833335029854}
+  - component: {fileID: -3749024813971916669}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -138,34 +138,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 1
   m_Constraints: 0
---- !u!114 &8307636806745829591
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1070183004320662470}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 12f4b9d4c9aeec24db94f0e89a3bee49, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  joystick: {fileID: 2929252283123773951, guid: aaa2c939c0359ac4dbce3f49e8b90252, type: 3}
-  deadZone: 0.2
---- !u!114 &2429231199589518518
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1070183004320662470}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bcce6ff0dd5f7134ab58269333171d13, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  joystick: {fileID: 2929252283123773951, guid: aaa2c939c0359ac4dbce3f49e8b90252, type: 3}
-  moveSpeed: 2
 --- !u!114 &7963989096007753196
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -181,6 +153,34 @@ MonoBehaviour:
   projectilePrefab: {fileID: 4663651280176129303, guid: dd021660fc6ba2741b009cdac0cfe21d, type: 3}
   firePoint: {fileID: 9174773162193730223}
   fireRate: 0.5
+--- !u!114 &839915833335029854
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1070183004320662470}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 12f4b9d4c9aeec24db94f0e89a3bee49, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  joystick: {fileID: 0}
+  deadZone: 0.2
+--- !u!114 &-3749024813971916669
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1070183004320662470}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bcce6ff0dd5f7134ab58269333171d13, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  joystick: {fileID: 0}
+  moveSpeed: 2
 --- !u!1 &6188615195296343885
 GameObject:
   m_ObjectHideFlags: 0

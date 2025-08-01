@@ -13,12 +13,16 @@ public class PlayerMovement : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+         if (joystick == null)
+        {
+            joystick = FindObjectOfType<FixedJoystick>();
+        }
     }
 
     void Update()
     {
         movement = new Vector2(joystick.Horizontal, joystick.Vertical);
-        Debug.Log("Joystick input: " + input);
+        Debug.Log("Joystick input: " + movement);
     }
 
     void FixedUpdate()

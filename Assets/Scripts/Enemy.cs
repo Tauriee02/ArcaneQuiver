@@ -38,7 +38,7 @@ public class Enemy : MonoBehaviour
         anim.PlayRun(true);
     }
 
-   public void Die()
+    public void Die()
     {
         if (isDead) return;
         isDead = true;
@@ -46,7 +46,9 @@ public class Enemy : MonoBehaviour
         anim.PlayDeath();
         GetComponent<Collider2D>().enabled = false;
         spawner?.EnemyDied();
+        LevelManager.Instance.EnemyKilled();
         Destroy(gameObject, 1f);
+        
     }
 
     void OnTriggerEnter2D(Collider2D collision)
@@ -54,7 +56,6 @@ public class Enemy : MonoBehaviour
         if (collision.CompareTag("Projectile"))
         {
             //anim.PlayHurt();
-            spawner?.EnemyDied();
             Die();
         }
     }

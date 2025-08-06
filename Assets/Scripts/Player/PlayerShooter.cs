@@ -7,7 +7,7 @@ public class PlayerShooter : MonoBehaviour
     public GameObject projectilePrefab;
     public Transform firePoint;
     public float fireRate = 1f;
-
+    public bool hasDoubleShot = false;
     private float nextFireTime = 0f;
     private Vector2 lastDirection = Vector2.down;
 
@@ -33,17 +33,33 @@ public class PlayerShooter : MonoBehaviour
         }
     }
 
+    public void EnableDoubleShot()
+    {
+        hasDoubleShot = true;
+    }
+
     void Shoot()
     {
         Vector2 shootDirection = FindDirectionToClosestEnemy();
 
-       
+
         anim.SetFloat("LastX", shootDirection.x);
         anim.SetFloat("LastY", shootDirection.y);
         anim.SetTrigger("IsAttacking");
 
-       
+
         StartCoroutine(DelayedShoot(shootDirection));
+        
+        if (hasDoubleShot)
+        {
+            Vector2 offset = Perpendicular(shootDirection) * 0.5f;
+            StartCoroutine(DelayedShoot(shootDirection + offset));
+        }
+    }
+
+    Vector2 Perpendicular(Vector2 v)
+    {
+        return new Vector2(-v.y, v.x).normalized;
     }
 
     Vector2 FindDirectionToClosestEnemy()

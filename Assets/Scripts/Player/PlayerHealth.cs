@@ -26,6 +26,7 @@ public class PlayerHealth : MonoBehaviour
         currentHealth = maxHealth;
         SetupComponents();
         FindGameOverManager();
+
     }
 
     private void SetupComponents()
@@ -140,5 +141,12 @@ public class PlayerHealth : MonoBehaviour
         UnityEngine.SceneManagement.SceneManager.LoadScene("MainMenu");
     }
 
-   
+    public void IncreaseMaxHealth(int amount = 1)
+    {
+        maxHealth += amount;
+        currentHealth += amount;
+        Debug.Log($"❤️ Vita massima aumentata a {maxHealth}");
+    }
+
+   public int CurrentHealth => currentHealth;
 }

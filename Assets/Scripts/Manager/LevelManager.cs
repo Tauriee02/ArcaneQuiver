@@ -54,9 +54,10 @@ public class LevelManager : MonoBehaviour
     private void ResetUIReferences()
     {
 
+        
         if (nextLevelUI == null)
         {
-
+            
             GameObject canvas = GameObject.Find("Canvas");
             if (canvas != null)
             {
@@ -69,45 +70,32 @@ public class LevelManager : MonoBehaviour
             }
         }
 
-
+        
         if (nextLevelUI != null)
         {
-            if (enemiesKilledText == null)
+            
+            Text[] texts = nextLevelUI.GetComponentsInChildren<Text>(true);
+            foreach (Text t in texts)
             {
-                enemiesKilledText = nextLevelUI.GetComponentInChildren<Text>(true);
-                // Oppure cerca per nome
-                Text[] texts = nextLevelUI.GetComponentsInChildren<Text>(true);
-                foreach (Text t in texts)
+                if (t.name == "EnemiesKilledText" && enemiesKilledText == null)
                 {
-                    if (t.name == "EnemiesKilledText")
-                    {
-                        enemiesKilledText = t;
-                        break;
-                    }
+                    enemiesKilledText = t;
                 }
-            }
-            if (timeSurvivedText == null)
-            {
-                Text[] texts = nextLevelUI.GetComponentsInChildren<Text>(true);
-                foreach (Text t in texts)
+                else if (t.name == "TimeSurvivedText" && timeSurvivedText == null)
                 {
-                    if (t.name == "TimeSurvivedText")
-                    {
-                        timeSurvivedText = t;
-                        break;
-                    }
+                    timeSurvivedText = t;
                 }
             }
         }
 
+        
         if (nextLevelUI == null)
         {
             Debug.LogError("❌ nextLevelUI non trovato nella scena!");
         }
-            else
-        { 
-    
-            nextLevelUI.SetActive(false);
+        else
+        {
+            nextLevelUI.SetActive(false); 
         }
     }
 
@@ -173,15 +161,14 @@ public class LevelManager : MonoBehaviour
         levelCompleted = false;
 
         int currentIndex = SceneManager.GetActiveScene().buildIndex;
-        int sceneCount = SceneManager.sceneCountInBuildSettings;
+        int nextIndex = currentIndex + 1;
 
-        if (currentIndex + 1 < sceneCount)
+        if (nextIndex < SceneManager.sceneCountInBuildSettings)
         {
-            SceneManager.LoadScene(currentIndex + 1);
+            SceneManager.LoadScene("LevelSelect");
         }
         else
         {
-            Debug.Log("Hai completato tutti i livelli!");
             LoadMainMenu();
         }
     }

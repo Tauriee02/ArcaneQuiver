@@ -13,9 +13,13 @@ public class PlayerMovement : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-         if (joystick == null)
+        if (joystick == null)
         {
             joystick = FindObjectOfType<FixedJoystick>();
+        }
+         if (joystick == null)
+        {
+            Debug.LogError("❌ FixedJoystick non trovato nella scena!");
         }
     }
 

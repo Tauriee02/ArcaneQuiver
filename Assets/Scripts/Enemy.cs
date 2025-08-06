@@ -55,8 +55,17 @@ public class Enemy : MonoBehaviour
     {
         if (collision.CompareTag("Projectile"))
         {
-            //anim.PlayHurt();
+            
             Die();
+        }
+        else if (collision.CompareTag("Player"))
+        {
+            
+            PlayerHealth playerHealth = collision.GetComponent<PlayerHealth>();
+            if (playerHealth != null)
+            {
+                playerHealth.TakeDamage();
+            }
         }
     }
 }

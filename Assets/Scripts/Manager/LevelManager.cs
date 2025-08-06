@@ -13,9 +13,9 @@ public class LevelManager : MonoBehaviour
     public int enemiesToKill = 15;
 
     
-    public GameObject nextLevelUI;         
-    public Text enemiesKilledText;           
-    public Text timeSurvivedText;            
+    [SerializeField] private GameObject nextLevelUI;         
+    [SerializeField] private Text enemiesKilledText;           
+    [SerializeField] private Text timeSurvivedText;            
      
 
     private float timeSurvived = 0f;
@@ -23,26 +23,101 @@ public class LevelManager : MonoBehaviour
 
     private void Awake()
     {
-        
+
         if (Instance == null)
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject); 
+            DontDestroyOnLoad(gameObject);
         }
         else
         {
-            Destroy(gameObject); 
+            Destroy(gameObject);
             return;
+        }
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        ResetLevelState();
+        
+        ResetUIReferences();
+    }
+    
+    private void ResetLevelState()
+    {
+        enemiesKilled = 0;
+        timeSurvived = 0f;
+        levelCompleted = false;
+    }
+
+    private void ResetUIReferences()
+    {
+
+        if (nextLevelUI == null)
+        {
+
+            GameObject canvas = GameObject.Find("Canvas");
+            if (canvas != null)
+            {
+                Transform panel = canvas.transform.Find("NextLevelUI");
+                if (panel != null)
+                {
+                    nextLevelUI = panel.gameObject;
+                    Debug.Log("✅ nextLevelUI trovato in Canvas");
+                }
+            }
+        }
+
+
+        if (nextLevelUI != null)
+        {
+            if (enemiesKilledText == null)
+            {
+                enemiesKilledText = nextLevelUI.GetComponentInChildren<Text>(true);
+                // Oppure cerca per nome
+                Text[] texts = nextLevelUI.GetComponentsInChildren<Text>(true);
+                foreach (Text t in texts)
+                {
+                    if (t.name == "EnemiesKilledText")
+                    {
+                        enemiesKilledText = t;
+                        break;
+                    }
+                }
+            }
+            if (timeSurvivedText == null)
+            {
+                Text[] texts = nextLevelUI.GetComponentsInChildren<Text>(true);
+                foreach (Text t in texts)
+                {
+                    if (t.name == "TimeSurvivedText")
+                    {
+                        timeSurvivedText = t;
+                        break;
+                    }
+                }
+            }
+        }
+
+        if (nextLevelUI == null)
+        {
+            Debug.LogError("❌ nextLevelUI non trovato nella scena!");
+        }
+            else
+        { 
+    
+            nextLevelUI.SetActive(false);
         }
     }
 
     private void Start()
     {
 
-        timeSurvived = 0f;
-        levelCompleted = false;
-        AudioManager.Instance.PlayGameStart();
-        AudioManager.Instance.PlayMusic(AudioManager.Instance.gameplayMusicClip);
+        if (AudioManager.Instance != null && AudioManager.Instance.gameplayMusicClip != null)
+        {
+            AudioManager.Instance.PlayMusic(AudioManager.Instance.gameplayMusicClip);
+        }
     }
 
     private void Update()

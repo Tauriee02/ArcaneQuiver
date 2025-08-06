@@ -9,51 +9,75 @@ public class PlayerHealth : MonoBehaviour
     private int currentHealth;
 
     [Header("Riferimenti")]
-    public GameObject gameOverManager; 
-    private GameOverManager gm;
+    public GameObject gameOverManagerObj; // Opzionale: assegnazione manuale
 
-    [Header("Feedback Visivo")]
-    public float invincibilityDuration = 1.5f; 
-    private bool isInvincible = false;
+    private GameOverManager gm;
     private SpriteRenderer spriteRenderer;
     private Animator animator;
+    private PlayerMovement playerMovement;
+    private PlayerShooter playerShooter;
+
+    [Header("Feedback Visivo")]
+    public float invincibilityDuration = 1f;
+    private bool isInvincible = false;
 
     private void Awake()
     {
         currentHealth = maxHealth;
+        SetupComponents();
+        FindGameOverManager();
+    }
+
+    private void SetupComponents()
+    {
         spriteRenderer = GetComponent<SpriteRenderer>();
         animator = GetComponent<Animator>();
+        playerMovement = GetComponent<PlayerMovement>();
+        playerShooter = GetComponent<PlayerShooter>();
 
-        
-        if (gameOverManager == null)
+        if (spriteRenderer == null)
+            Debug.LogError("SpriteRenderer mancante su player!");
+        if (animator == null)
+            Debug.LogError("Animator mancante su player!");
+        if (playerMovement == null)
+            Debug.LogWarning("PlayerMovement non trovato (opzionale)");
+        if (playerShooter == null)
+            Debug.LogWarning("PlayerShooter non trovato (opzionale)");
+    }
+
+    private void FindGameOverManager()
+    {
+        if (gameOverManagerObj != null)
         {
-            GameObject goManager = GameObject.Find("GameOverManager");
-            if (goManager != null)
-            {
-                gm = goManager.GetComponent<GameOverManager>();
-            }
+            gm = gameOverManagerObj.GetComponent<GameOverManager>();
         }
         else
         {
-            gm = gameOverManager.GetComponent<GameOverManager>();
+            GameObject goObj = GameObject.Find("GameOverManager");
+            if (goObj != null)
+            {
+                gm = goObj.GetComponent<GameOverManager>();
+            }
+        }
+
+        if (gm == null)
+        {
+            Debug.LogError("❌ GameOverManager non trovato! Assicurati che esista nella scena.");
         }
     }
-
 
     public void TakeDamage()
     {
         if (isInvincible) return;
 
         currentHealth--;
+        Debug.Log($"Player ha preso danno! Vita: {currentHealth}");
 
-        
         isInvincible = true;
         StartCoroutine(FlashPlayer());
         Invoke(nameof(ResetInvincibility), invincibilityDuration);
 
-        
-        animator.SetTrigger("Hurt");
-
+        animator?.SetTrigger("Hurt");
 
         if (currentHealth <= 0)
         {
@@ -66,56 +90,55 @@ public class PlayerHealth : MonoBehaviour
         isInvincible = false;
     }
 
-  
     IEnumerator FlashPlayer()
     {
+        if (spriteRenderer == null) yield break;
+
         int flashes = 6;
         for (int i = 0; i < flashes; i++)
         {
-            spriteRenderer.color = new Color(1f, 0.5f, 0.5f, 1f); 
+            spriteRenderer.color = new Color(1f, 0.5f, 0.5f, 1f);
             yield return new WaitForSeconds(0.1f);
             spriteRenderer.color = Color.white;
             yield return new WaitForSeconds(0.1f);
         }
     }
 
-
     void Die()
     {
-        AudioManager.Instance.StopMusic();
-        AudioManager.Instance.PlayPlayerDeath();
+        Debug.Log("Player morto! Avvio Game Over...");
 
         
-        enabled = false;
-        GetComponent<PlayerMovement>().enabled = false;
-        GetComponent<PlayerShooter>().enabled = false;
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlayPlayerDeath();
+            AudioManager.Instance.StopMusic();
+        }
+
+        
+        if (playerMovement != null) playerMovement.enabled = false;
+        if (playerShooter != null) playerShooter.enabled = false;
+        if (spriteRenderer != null) spriteRenderer.enabled = false;
+        if (GetComponent<Collider2D>() != null) GetComponent<Collider2D>().enabled = false;
 
         
         if (gm != null)
         {
-            gm.PlayerDied();
+            Debug.Log("✅ GameOverManager trovato. Chiamo PlayerDied()...");
+            gm.PlayerDied(); 
         }
         else
         {
-            Debug.LogError("GameOverManager non trovato!");
+            Debug.LogError("GameOverManager è null! Il panel di Game Over non apparirà.");
+            
         }
 
-        spriteRenderer.enabled = false;
-        GetComponent<Collider2D>().enabled = false;
     }
 
-
-    public void Heal(int amount)
+    void LoadMainMenuFallback()
     {
-        currentHealth = Mathf.Clamp(currentHealth + amount, 0, maxHealth);
+        UnityEngine.SceneManagement.SceneManager.LoadScene("MainMenu");
     }
 
    
-    private void OnTriggerEnter2D(Collider2D other)
-    {
-        if (other.CompareTag("Enemy"))
-        {
-            TakeDamage();
-        }
-    }
 }

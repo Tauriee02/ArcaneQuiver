@@ -6,8 +6,7 @@ using UnityEngine.SceneManagement;
 public class GameOverManager : MonoBehaviour
 {
     public GameObject gameOverPanel;
-    public float delayBeforeGameOver = 0.5f;
-
+    public float delayBeforeGameOver = 0f;
     private bool hasGameEnded = false;
 
     
@@ -17,14 +16,25 @@ public class GameOverManager : MonoBehaviour
         hasGameEnded = true;
         Time.timeScale = 0f; 
 
-        Invoke(nameof(ShowGameOverPanel), delayBeforeGameOver);
+        StartCoroutine(ShowAfterDelay());
+    }
+
+    IEnumerator ShowAfterDelay()
+    {
+           if (delayBeforeGameOver > 0f)
+        {
+            yield return new WaitForSecondsRealtime(delayBeforeGameOver);
+        }
+        ShowGameOverPanel();
     }
 
     private void ShowGameOverPanel()
     {
+        
         if (gameOverPanel != null)
         {
             gameOverPanel.SetActive(true);
+            
         }
         else
         {

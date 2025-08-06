@@ -7,8 +7,8 @@ public class AudioManager : MonoBehaviour
     public static AudioManager Instance;
 
     [Header("Audio Sources")]
-    public AudioSource musicSource;     
-    public AudioSource sfxSource;  
+    public AudioSource musicSource;
+    public AudioSource sfxSource;
 
     [Header("Audio Clips")]
     public AudioClip buttonClickClip;
@@ -21,32 +21,60 @@ public class AudioManager : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject); 
+            DontDestroyOnLoad(gameObject);
         }
         else
         {
-            Destroy(gameObject);
-            return;
+            if (Instance != this)
+            {
+                Destroy(gameObject);
+                return;
+            }
         }
 
-  
+
+        SetupAudioSources();
+    }
+
+    private void SetupAudioSources()
+    {
         if (musicSource == null)
-            musicSource = gameObject.AddComponent<AudioSource>();
+        {
+            musicSource = gameObject.GetComponent<AudioSource>();
+            if (musicSource == null)
+            {
+                musicSource = gameObject.AddComponent<AudioSource>();
+            }
+        }
 
         if (sfxSource == null)
+        {
             sfxSource = gameObject.AddComponent<AudioSource>();
+        }
 
         musicSource.loop = true;
         musicSource.playOnAwake = false;
-
-        sfxSource.loop = false;
         sfxSource.playOnAwake = false;
+    }
+
+     private void OnEnable()
+    {
+        
+        SetupAudioSources();
     }
 
     private void Start()
     {
-        // Avvia musica di sottofondo (opzionale)
-        // PlayMusic(gameplayMusicClip);
+        float musicVol = PlayerPrefs.GetFloat("MusicVolume", 0.7f);
+        float sfxVol = PlayerPrefs.GetFloat("SFXVolume", 1.0f);
+
+        SetMusicVolume(musicVol);
+        SetSFXVolume(sfxVol);
+
+        if (Application.loadedLevel > 0 && gameplayMusicClip != null && !musicSource.isPlaying)
+        {
+            PlayMusic(gameplayMusicClip);
+        }
     }
 
 
@@ -88,6 +116,25 @@ public class AudioManager : MonoBehaviour
         if (clip != null && sfxSource != null)
         {
             sfxSource.PlayOneShot(clip);
+        }
+    }
+    
+
+    public void SetMusicVolume(float volume)
+    {
+        if (musicSource != null)
+        {
+            musicSource.volume = volume;
+            PlayerPrefs.SetFloat("MusicVolume", volume); 
+        }
+    }
+
+    public void SetSFXVolume(float volume)
+    {
+        if (sfxSource != null)
+        {
+            sfxSource.volume = volume;
+            PlayerPrefs.SetFloat("SFXVolume", volume); 
         }
     }
 }

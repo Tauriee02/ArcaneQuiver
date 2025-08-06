@@ -21,24 +21,25 @@ public class MainMenu : MonoBehaviour
     private void Start()
     {
         
-        if (audioSource == null)
+       if (musicVolumeSlider != null)
         {
-            audioSource = gameObject.AddComponent<AudioSource>();
+            musicVolumeSlider.value = PlayerPrefs.GetFloat("MusicVolume", 0.7f);
+        }
+
+        if (sfxVolumeSlider != null)
+        {
+            sfxVolumeSlider.value = PlayerPrefs.GetFloat("SFXVolume", 1.0f);
         }
 
         
-        if (mainMenuPanel != null)
-            mainMenuPanel.SetActive(true);
-
-        if (settingsPanel != null)
-            settingsPanel.SetActive(false);
+        if (mainMenuPanel != null) mainMenuPanel.SetActive(true);
+        if (settingsPanel != null) settingsPanel.SetActive(false);
 
         
-        if (musicVolumeSlider != null)
-            musicVolumeSlider.value = 0.7f;  
-
-        if (sfxVolumeSlider != null)
-            sfxVolumeSlider.value = 1.0f;    
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlayMusic(AudioManager.Instance.gameplayMusicClip);
+        } 
     }
 
    
@@ -68,23 +69,22 @@ public class MainMenu : MonoBehaviour
     
     public void SetMusicVolume()
     {
-        if (musicVolumeSlider != null)
+        if (musicVolumeSlider != null && AudioManager.Instance != null)
         {
-            
             float volume = musicVolumeSlider.value;
-            Debug.Log($"Volume Musica impostato a: {volume:F2}");
-            // AudioManager.Instance.SetMusicVolume(volume); // Opzionale in futuro
+            AudioManager.Instance.SetMusicVolume(volume);
+            Debug.Log($"🔊 Musica: {volume:F2}");
         }
     }
 
 
     public void SetSFXVolume()
     {
-        if (sfxVolumeSlider != null)
+         if (sfxVolumeSlider != null && AudioManager.Instance != null)
         {
             float volume = sfxVolumeSlider.value;
-            Debug.Log($"Volume SFX impostato a: {volume:F2}");
-            // AudioManager.Instance.SetSFXVolume(volume);
+            AudioManager.Instance.SetSFXVolume(volume);
+            Debug.Log($"🔊 SFX: {volume:F2}");
         }
     }
 
@@ -104,6 +104,9 @@ public class MainMenu : MonoBehaviour
     
     private void PlayButtonSound()
     {
-        AudioManager.Instance.PlayButtonClick(); 
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlayButtonClick();
+        } 
     }
 }

@@ -22,7 +22,6 @@ public class PlayerMovement : MonoBehaviour
     void Update()
     {
         movement = new Vector2(joystick.Horizontal, joystick.Vertical);
-        Debug.Log("Joystick input: " + movement);
     }
 
     void FixedUpdate()

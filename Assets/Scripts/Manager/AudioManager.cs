@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class AudioManager : MonoBehaviour
 {
@@ -57,10 +58,15 @@ public class AudioManager : MonoBehaviour
         sfxSource.playOnAwake = false;
     }
 
-     private void OnEnable()
+    private void OnEnable()
     {
-        
+        SceneManager.sceneLoaded += OnSceneLoaded;
         SetupAudioSources();
+    }
+
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
     private void Start()
@@ -71,7 +77,7 @@ public class AudioManager : MonoBehaviour
         SetMusicVolume(musicVol);
         SetSFXVolume(sfxVol);
 
-        if (Application.loadedLevel > 0 && gameplayMusicClip != null && !musicSource.isPlaying)
+        if (SceneManager.GetActiveScene().buildIndex > 0 && gameplayMusicClip != null && !musicSource.isPlaying)
         {
             PlayMusic(gameplayMusicClip);
         }
@@ -118,14 +124,14 @@ public class AudioManager : MonoBehaviour
             sfxSource.PlayOneShot(clip);
         }
     }
-    
+
 
     public void SetMusicVolume(float volume)
     {
         if (musicSource != null)
         {
             musicSource.volume = volume;
-            PlayerPrefs.SetFloat("MusicVolume", volume); 
+            PlayerPrefs.SetFloat("MusicVolume", volume);
         }
     }
 
@@ -134,7 +140,17 @@ public class AudioManager : MonoBehaviour
         if (sfxSource != null)
         {
             sfxSource.volume = volume;
-            PlayerPrefs.SetFloat("SFXVolume", volume); 
+            PlayerPrefs.SetFloat("SFXVolume", volume);
+        }
+    }
+    
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        int index = scene.buildIndex;
+
+        if (index > 0 && gameplayMusicClip != null && !musicSource.isPlaying)
+        {
+            PlayMusic(gameplayMusicClip);
         }
     }
 }

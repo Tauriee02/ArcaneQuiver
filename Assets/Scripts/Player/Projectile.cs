@@ -11,7 +11,7 @@ public class Projectile : MonoBehaviour
 
     void Start()
     {
-        FindClosestEnemyDirection();
+
         Destroy(gameObject, 5f);
         if (target != null)
         {
@@ -29,32 +29,6 @@ public class Projectile : MonoBehaviour
     }
 
 
-    void FindClosestEnemyDirection()
-    {
-        GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
-        float minDistance = Mathf.Infinity;
-        Transform closest = null;
-
-        foreach (GameObject enemy in enemies)
-        {
-            float dist = Vector2.Distance(transform.position, enemy.transform.position);
-            if (dist < minDistance)
-            {
-                minDistance = dist;
-                closest = enemy.transform;
-            }
-        }
-
-        if (closest != null)
-        {
-            direction = (closest.position - transform.position).normalized;
-        }
-        else
-        {
-
-            direction = transform.right;
-        }
-    }
 
     public void SetDirection(Vector2 dir)
     {

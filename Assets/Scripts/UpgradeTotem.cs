@@ -30,26 +30,27 @@ public class UpgradeTotem : MonoBehaviour
     
     public void AddMaxHealth()
     {
+        
+        int currentBonus = PlayerPrefs.GetInt("HealthBonus", 0);
+        PlayerPrefs.SetInt("HealthBonus", currentBonus + 1);
+        
+        
         PlayerHealth player = FindObjectOfType<PlayerHealth>();
         if (player != null)
         {
-            player.IncreaseMaxHealth(1);
+            player.IncreaseMaxHealth(1); 
+            player.SaveCurrentHealth();
         }
-        else
-        {
-            Debug.LogError("❌ PlayerHealth non trovato!");
-        }
+
         ContinueToNextLevel();
     }
 
     public void AddExtraShot()
     {
-        PlayerShooter playerShooter = FindObjectOfType<PlayerShooter>();
-        if (playerShooter != null)
-        {
-            playerShooter.EnableDoubleShot(); 
-            Debug.Log("⚡ Doppio tiro abilitato!");
-        }
+         PlayerPrefs.SetInt("HasDoubleShot", 1);
+        PlayerPrefs.Save();
+
+        Debug.Log("⚡ Doppio tiro abilitato e salvato!");
         ContinueToNextLevel();
     }
 

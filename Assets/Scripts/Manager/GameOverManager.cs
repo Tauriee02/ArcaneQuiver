@@ -16,6 +16,12 @@ public class GameOverManager : MonoBehaviour
         hasGameEnded = true;
         Time.timeScale = 0f; 
 
+        PlayerPrefs.DeleteKey("SavedCurrentHealth");
+        PlayerPrefs.DeleteKey("SavedMaxHealth");
+        PlayerPrefs.DeleteKey("HealthBonus");
+        PlayerPrefs.DeleteKey("HasDoubleShot");
+        PlayerPrefs.Save();
+
         StartCoroutine(ShowAfterDelay());
     }
 

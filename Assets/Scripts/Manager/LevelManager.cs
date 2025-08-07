@@ -155,13 +155,18 @@ public class LevelManager : MonoBehaviour
     
     public void LoadNextLevel()
     {
-        Time.timeScale = 1f; 
+        Time.timeScale = 1f;
+         PlayerHealth player = FindObjectOfType<PlayerHealth>();
+        if (player != null)
+        {
+            player.SaveCurrentHealth();
+            Debug.Log($"💾 Vita salvata prima di andare a LevelSelect: {player.CurrentHealth}/{player.maxHealth}");
+        }
         enemiesKilled = 0;
         timeSurvived = 0f;
         levelCompleted = false;
 
-        int currentIndex = SceneManager.GetActiveScene().buildIndex;
-        int nextIndex = currentIndex + 1;
+        int nextIndex = SceneManager.GetActiveScene().buildIndex + 1;
 
         if (nextIndex < SceneManager.sceneCountInBuildSettings)
         {
@@ -184,6 +189,12 @@ public class LevelManager : MonoBehaviour
     public void RestartLevel()
     {
         Time.timeScale = 1f;
+
+        PlayerHealth player = FindObjectOfType<PlayerHealth>();
+        if (player != null)
+        {
+            player.SaveCurrentHealth();
+        }
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 }

@@ -16,6 +16,17 @@ public class PlayerShooter : MonoBehaviour
     void Start()
     {
         anim = GetComponent<Animator>();
+
+        int hasDouble = PlayerPrefs.GetInt("HasDoubleShot", 0);
+        if (hasDouble == 1)
+        {
+            hasDoubleShot = true;
+            Debug.Log("⚡ Doppio tiro caricato!");
+        }
+        else
+        {
+            Debug.Log("🔸 Doppio tiro disabilitato");
+        }
     }
 
     void Update()
@@ -51,10 +62,12 @@ public class PlayerShooter : MonoBehaviour
         StartCoroutine(DelayedShoot(shootDirection));
         
         if (hasDoubleShot)
-        {
-            Vector2 offset = Perpendicular(shootDirection) * 0.5f;
-            StartCoroutine(DelayedShoot(shootDirection + offset));
-        }
+    {
+        Vector2 offset = new Vector2(-shootDirection.y, shootDirection.x).normalized;
+        
+        StartCoroutine(DelayedShoot(shootDirection + offset * 0.3f, 0.1f));
+        StartCoroutine(DelayedShoot(shootDirection - offset * 0.3f, 0.1f));
+    }
     }
 
     Vector2 Perpendicular(Vector2 v)
@@ -87,10 +100,9 @@ public class PlayerShooter : MonoBehaviour
     }
 
 
-    IEnumerator DelayedShoot(Vector2 direction)
+    IEnumerator DelayedShoot(Vector2 direction, float extraDelay = 0f)
     {
-        
-        yield return new WaitForSeconds(0.3f);
+    yield return new WaitForSeconds(0.3f + extraDelay);
 
         GameObject projectile = Instantiate(projectilePrefab, firePoint.position, Quaternion.identity);
         Projectile projScript = projectile.GetComponent<Projectile>();

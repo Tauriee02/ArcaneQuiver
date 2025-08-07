@@ -23,9 +23,29 @@ public class PlayerHealth : MonoBehaviour
 
     private void Awake()
     {
-        currentHealth = maxHealth;
         SetupComponents();
         FindGameOverManager();
+
+    }
+
+    private void Start()
+    {
+
+        int healthBonus = PlayerPrefs.GetInt("HealthBonus", 0);
+
+        maxHealth = 3 + healthBonus;
+        int savedCurrent = PlayerPrefs.GetInt("SavedCurrentHealth", -1);
+
+        if (savedCurrent >= 0 && savedCurrent <= maxHealth)
+        {
+            currentHealth = savedCurrent;
+            Debug.Log($"❤️ Caricata vita salvata: {currentHealth}/{maxHealth}");
+        }
+        else
+        {
+            currentHealth = maxHealth;
+             Debug.Log($"⚠️ Nessun valore valido di vita salvata. Riparto con: {currentHealth}/{maxHealth}");
+        }
 
     }
 
@@ -145,7 +165,15 @@ public class PlayerHealth : MonoBehaviour
     {
         maxHealth += amount;
         currentHealth += amount;
-        Debug.Log($"❤️ Vita massima aumentata a {maxHealth}");
+        Debug.Log($"❤️ Vita aumentata a {maxHealth} (attuale: {currentHealth})");
+    }
+
+    public void SaveCurrentHealth()
+    {
+        PlayerPrefs.SetInt("SavedCurrentHealth", currentHealth);
+        PlayerPrefs.SetInt("SavedMaxHealth", maxHealth);
+        PlayerPrefs.Save();
+        Debug.Log($"💾 Vita salvata: {currentHealth}/{maxHealth}");
     }
 
    public int CurrentHealth => currentHealth;

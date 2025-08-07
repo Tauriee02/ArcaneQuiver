@@ -38,16 +38,20 @@ public class PlayerHealthUI : MonoBehaviour
     void UpdateHearts()
     {
         if (playerHealth == null) return;
+        
+        int currentMax = playerHealth.maxHealth;
 
         for (int i = 0; i < hearts.Length; i++)
         {
             if (i < playerHealth.CurrentHealth)
             {
-                hearts[i].sprite = fullHeart; 
+                hearts[i].sprite = fullHeart;
+                hearts[i].gameObject.SetActive(true);
             }
             else
             {
-                hearts[i].sprite = emptyHeart; 
+                hearts[i].sprite = emptyHeart;
+                hearts[i].gameObject.SetActive(false);
             }
         }
     }

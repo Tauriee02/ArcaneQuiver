@@ -34,19 +34,13 @@ public class SpawnManager : MonoBehaviour
 
     void SpawnEnemies()
     {
-        foreach (Transform spawnPoint in enemySpawnPoints)
-        {
-            Debug.Log("Spawn nemico in: " + spawnPoint.position);
-            Instantiate(enemyPrefab, spawnPoint.position, Quaternion.identity);
-        }
         if (enemyPrefab != null && enemySpawnPoints.Length > 0)
         {
             foreach (Transform spawnPoint in enemySpawnPoints)
             {
                 if (spawnPoint != null)
                     Instantiate(enemyPrefab, spawnPoint.position, Quaternion.identity);
-            }
-            
+            }   
         }
         else
         {

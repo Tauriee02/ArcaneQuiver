@@ -43,21 +43,19 @@ public class Enemy : MonoBehaviour
         if (isDead) return;
         isDead = true;
 
+        var col = GetComponent<Collider2D>();
+        if (col) col.enabled = false;
+
+        var rb = GetComponent<Rigidbody2D>();
+        if (rb) rb.simulated = false;
+
         anim.PlayDeath();
-        GetComponent<Collider2D>().enabled = false;
         spawner?.EnemyDied();
         LevelManager.Instance.EnemyKilled();
         Destroy(gameObject, 1f);
-        
+        Debug.Log($"Nemico ucciso! Totale uccisi: {LevelManager.Instance.enemiesKilled + 1}");
     }
 
-    void OnDestroy()
-    {
-        if (spawner != null)
-        {
-            spawner.EnemyDied();
-        }
-    }
 
     void OnTriggerEnter2D(Collider2D collision)
     {

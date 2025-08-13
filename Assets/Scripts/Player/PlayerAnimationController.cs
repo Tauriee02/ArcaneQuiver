@@ -18,11 +18,11 @@ public class PlayerAnimationController : MonoBehaviour
         
         if (joystick == null)
         {
-            Debug.LogError("❌ FixedJoystick non trovato nella scena! L'animazione non funzionerà.");
+            Debug.LogError("FixedJoystick non trovato nella scena! L'animazione non funzionerà.");
         }
         else
         {
-            Debug.Log("✅ Joystick trovato: " + joystick.name);
+            Debug.Log("Joystick trovato: " + joystick.name);
         }
     }
 
@@ -38,7 +38,6 @@ public class PlayerAnimationController : MonoBehaviour
         
         bool isMoving = Mathf.Abs(moveX) > deadZone || Mathf.Abs(moveY) > deadZone;
 
-        // Imposta i parametri dell’animator
         animator.SetFloat("Horizontal", moveX);
         animator.SetFloat("Vertical", moveY);
         animator.SetBool("IsMoving", isMoving);

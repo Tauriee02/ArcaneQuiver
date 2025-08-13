@@ -17,11 +17,11 @@ public class UpgradeTotem : MonoBehaviour
             {
                 upgradePanel.SetActive(true);
                 Time.timeScale = 0f;
-                Debug.Log("🎯 Totem attivato! Scegli un potenziamento.");
+                Debug.Log("Totem attivato! Scegli un potenziamento.");
             }
             else
             {
-                Debug.LogError("❌ upgradePanel non assegnato!");
+                Debug.LogError("upgradePanel non assegnato!");
             }
         }
     }
@@ -49,7 +49,7 @@ public class UpgradeTotem : MonoBehaviour
          PlayerPrefs.SetInt("HasDoubleShot", 1);
         PlayerPrefs.Save();
 
-        Debug.Log("⚡ Doppio tiro abilitato e salvato!");
+        Debug.Log("Doppio tiro abilitato e salvato!");
         ContinueToNextLevel();
     }
 
@@ -63,7 +63,7 @@ public class UpgradeTotem : MonoBehaviour
         if (nextSceneIndex < SceneManager.sceneCountInBuildSettings)
         {
             SceneManager.LoadScene(nextSceneIndex);
-            Debug.Log($"✅ Caricato il livello successivo: indice {nextSceneIndex}");
+            Debug.Log($"Caricato il livello successivo: indice {nextSceneIndex}");
         }
         else
         {

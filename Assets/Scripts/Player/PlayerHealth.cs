@@ -30,21 +30,29 @@ public class PlayerHealth : MonoBehaviour
 
     private void Start()
     {
-
+        int savedMax = PlayerPrefs.GetInt("SavedMaxHealth", -1);
         int healthBonus = PlayerPrefs.GetInt("HealthBonus", 0);
 
-        maxHealth = 3 + healthBonus;
+        if (savedMax > 0)
+        {
+            maxHealth = savedMax;
+        }
+        else
+        {
+            maxHealth = 3 + healthBonus;
+        }
+
         int savedCurrent = PlayerPrefs.GetInt("SavedCurrentHealth", -1);
 
         if (savedCurrent >= 0 && savedCurrent <= maxHealth)
         {
             currentHealth = savedCurrent;
-            Debug.Log($"❤️ Caricata vita salvata: {currentHealth}/{maxHealth}");
+            Debug.Log($"Caricata vita salvata: {currentHealth}/{maxHealth}");
         }
         else
         {
             currentHealth = maxHealth;
-             Debug.Log($"⚠️ Nessun valore valido di vita salvata. Riparto con: {currentHealth}/{maxHealth}");
+            Debug.Log($"Nessun valore valido di vita salvata. Riparto con: {currentHealth}/{maxHealth}");
         }
 
     }
@@ -83,7 +91,7 @@ public class PlayerHealth : MonoBehaviour
 
         if (gm == null)
         {
-            Debug.LogError("❌ GameOverManager non trovato! Assicurati che esista nella scena.");
+            Debug.LogError("GameOverManager non trovato! Assicurati che esista nella scena.");
         }
     }
 
@@ -93,6 +101,8 @@ public class PlayerHealth : MonoBehaviour
 
         currentHealth--;
         Debug.Log($"Player ha preso danno! Vita: {currentHealth}");
+        
+        SaveCurrentHealth();
 
         isInvincible = true;
         StartCoroutine(FlashPlayer());
@@ -145,7 +155,7 @@ public class PlayerHealth : MonoBehaviour
         
         if (gm != null)
         {
-            Debug.Log("✅ GameOverManager trovato. Chiamo PlayerDied()...");
+            Debug.Log("GameOverManager trovato. Chiamo PlayerDied()...");
             gm.PlayerDied(); 
         }
         else
@@ -165,7 +175,7 @@ public class PlayerHealth : MonoBehaviour
     {
         maxHealth += amount;
         currentHealth += amount;
-        Debug.Log($"❤️ Vita aumentata a {maxHealth} (attuale: {currentHealth})");
+        Debug.Log($"Vita aumentata a {maxHealth} (attuale: {currentHealth})");
     }
 
     public void SaveCurrentHealth()
@@ -173,7 +183,7 @@ public class PlayerHealth : MonoBehaviour
         PlayerPrefs.SetInt("SavedCurrentHealth", currentHealth);
         PlayerPrefs.SetInt("SavedMaxHealth", maxHealth);
         PlayerPrefs.Save();
-        Debug.Log($"💾 Vita salvata: {currentHealth}/{maxHealth}");
+        Debug.Log($"Vita salvata: {currentHealth}/{maxHealth}");
     }
 
    public int CurrentHealth => currentHealth;

@@ -26,7 +26,7 @@ public class PlayerMovement : MonoBehaviour
         
         if (joystick == null)
         {
-            Debug.LogError("❌ FixedJoystick non trovato nella scena!");
+            Debug.LogError("FixedJoystick non trovato nella scena!");
         }
 
         if (useCameraBounds)
@@ -58,7 +58,7 @@ public class PlayerMovement : MonoBehaviour
         mainCamera = Camera.main;
         if (mainCamera == null)
         {
-            Debug.LogError("❌ Camera.main non trovata!");
+            Debug.LogError("Camera.main non trovata!");
             useCameraBounds = false;
             return;
         }

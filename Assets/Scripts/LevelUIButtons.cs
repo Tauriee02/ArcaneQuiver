@@ -13,7 +13,7 @@ public class LevelUIButtons : MonoBehaviour
         {
             Time.timeScale = 1f;
             SceneManager.LoadScene(nextIndex);
-            Debug.Log($"▶️ Caricato livello con indice: {nextIndex}");
+            Debug.Log($"Caricato livello con indice: {nextIndex}");
         }
         else
         {

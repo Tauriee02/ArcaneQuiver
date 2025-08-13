@@ -45,7 +45,7 @@ public class PauseManager : MonoBehaviour
         if (pausePanel != null)
             pausePanel.SetActive(true);
         
-        Debug.Log("⏸️ Gioco in pausa");
+        Debug.Log("Gioco in pausa");
     }
 
     public void ResumeGame()
@@ -74,7 +74,7 @@ public class PauseManager : MonoBehaviour
                 AudioManager.Instance.SetMusicVolume(volume);
             }
             PlayerPrefs.SetFloat("MusicVolume", volume); 
-            Debug.Log($"🎵 Volume Musica: {volume:F2}");
+            Debug.Log($"Volume Musica: {volume:F2}");
         }
     }
 
@@ -88,7 +88,7 @@ public class PauseManager : MonoBehaviour
                 AudioManager.Instance.SetSFXVolume(volume);
             }
             PlayerPrefs.SetFloat("SfxVolume", volume); 
-            Debug.Log($"🔊 Volume SFX: {volume:F2}");
+            Debug.Log($"Volume SFX: {volume:F2}");
         }
     }
 

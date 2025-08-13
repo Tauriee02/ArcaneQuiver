@@ -45,7 +45,7 @@ public class LevelManager : MonoBehaviour
 
         if (isGameLevel)
         {
-            Debug.Log($"🎮 LevelManager: Caricato livello di gioco '{scene.name}'. Inizializzo UI.");
+            Debug.Log($"LevelManager: Caricato livello di gioco '{scene.name}'. Inizializzo UI.");
 
             ResetLevelState();
 
@@ -55,7 +55,7 @@ public class LevelManager : MonoBehaviour
                     enemiesToKill = 15;
                     break;
                 case "Level2":
-                    enemiesToKill = 3;
+                    enemiesToKill = 20;
                     break;
                 case "Level3":
                     enemiesToKill = 1;
@@ -65,13 +65,13 @@ public class LevelManager : MonoBehaviour
                     break;
             }
 
-            Debug.Log($"🎯 Obiettivo nemici impostato a {enemiesToKill} per {scene.name}");
+            Debug.Log($"Obiettivo nemici impostato a {enemiesToKill} per {scene.name}");
 
             ResetUIReferences();
         }
         else
         {
-            Debug.Log($"ℹ️ LevelManager: '{scene.name}' non è un livello di gioco. Disabilito UI.");
+            Debug.Log($"LevelManager: '{scene.name}' non è un livello di gioco. Disabilito UI.");
             nextLevelUI = null;
             enemiesKilledText = null;
             timeSurvivedText = null;
@@ -95,7 +95,7 @@ public class LevelManager : MonoBehaviour
         GameObject canvas = GameObject.Find("Canvas");
         if (canvas == null)
         {
-            Debug.LogError("❌ Canvas non trovato nella scena!");
+            Debug.LogError("Canvas non trovato nella scena!");
             return;
         }
 
@@ -108,7 +108,7 @@ public class LevelManager : MonoBehaviour
             if (finalPanel != null)
             {
                 panel = finalPanel.gameObject;
-                Debug.Log("✅ FinalLevelUI trovato!");
+                Debug.Log("FinalLevelUI trovato!");
             }
         }
         else
@@ -117,7 +117,7 @@ public class LevelManager : MonoBehaviour
             if (nextPanel != null)
             {
                 panel = nextPanel.gameObject;
-                Debug.Log("✅ NextLevelUI trovato!");
+                Debug.Log("NextLevelUI trovato!");
             }
         }
 
@@ -135,7 +135,7 @@ public class LevelManager : MonoBehaviour
         }
         else
         {
-            Debug.LogError("❌ Nessun pannello UI trovato (né NextLevelUI né FinalLevelUI)!");
+            Debug.LogError("Nessun pannello UI trovato (né NextLevelUI né FinalLevelUI)!");
         }
     }
 
@@ -170,17 +170,18 @@ public class LevelManager : MonoBehaviour
         }
     }
 
-    
+
     public void EnemyKilled()
     {
         enemiesKilled++;
+        Debug.Log($"Contatore nemici uccisi: {enemiesKilled}");
 
-        
         if (enemiesKilled >= enemiesToKill && !levelCompleted)
         {
             levelCompleted = true;
             ShowNextLevelUI();
         }
+        
     }
 
    
@@ -195,7 +196,7 @@ public class LevelManager : MonoBehaviour
         {
             PlayerPrefs.SetInt("NextLevelBuildIndex", nextLevelIndex);
             PlayerPrefs.Save();
-            Debug.Log($"💾 Prossimo livello salvato: indice {nextLevelIndex}");
+            Debug.Log($"Prossimo livello salvato: indice {nextLevelIndex}");
         }
         else
         {
@@ -215,16 +216,16 @@ public class LevelManager : MonoBehaviour
             if (enemiesKilledText != null)
                 enemiesKilledText.text = $"Nemici Uccisi: {enemiesKilled}/{enemiesToKill}";
             else
-                Debug.LogWarning("⚠️ enemiesKilledText non trovato!");
+                Debug.LogWarning("enemiesKilledText non trovato!");
 
             if (timeSurvivedText != null)
                 timeSurvivedText.text = $"Tempo: {timeSurvived:F1}s";
             else
-                Debug.LogWarning("⚠️ timeSurvivedText non trovato!");
+                Debug.LogWarning("timeSurvivedText non trovato!");
         }
         else
         {
-            Debug.LogError("❌ nextLevelUI non assegnato in LevelManager!");
+            Debug.LogError("nextLevelUI non assegnato in LevelManager!");
         }
     }
 
@@ -237,7 +238,12 @@ public class LevelManager : MonoBehaviour
         PlayerHealth player = FindObjectOfType<PlayerHealth>();
         if (player != null)
         {
+            Debug.Log($"Player trovato: {player.CurrentHealth}/{player.maxHealth}. Salvataggio...");
             player.SaveCurrentHealth();
+        }
+        else
+        {
+            Debug.LogError("Player non trovato! Impossibile salvare la vita.");
         }
 
         ResetLevelState();

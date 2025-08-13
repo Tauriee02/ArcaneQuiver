@@ -28,24 +28,22 @@ public class PlayerHealthUI : MonoBehaviour
 
         if (playerHealth != null)
         {
-            Debug.Log("✅ PlayerHealthUI: PlayerHealth trovato!");
+            Debug.Log("PlayerHealthUI: PlayerHealth trovato!");
             UpdateHearts();
             
         }
         else
         {
-            Debug.LogError("❌ PlayerHealthUI: PlayerHealth non trovato neanche dopo ritardo!");
-            
             yield return new WaitForSeconds(1f);
             playerHealth = FindObjectOfType<PlayerHealth>();
             if (playerHealth != null)
             {
-                Debug.Log("✅ Trovato in ritardo!");
+                Debug.Log("Trovato in ritardo!");
                 UpdateHearts();
             }
             else
             {
-                Debug.LogError("❌ Ancora non trovato. Assicurati che il player abbia PlayerHealth.");
+                Debug.LogError("Ancora non trovato. Assicurati che il player abbia PlayerHealth.");
             }
         }
     }

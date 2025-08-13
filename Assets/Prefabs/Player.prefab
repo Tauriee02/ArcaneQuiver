@@ -155,6 +155,7 @@ MonoBehaviour:
   projectilePrefab: {fileID: 4663651280176129303, guid: dd021660fc6ba2741b009cdac0cfe21d, type: 3}
   firePoint: {fileID: 9174773162193730223}
   fireRate: 0.5
+  hasDoubleShot: 0
 --- !u!114 &839915833335029854
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -183,6 +184,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   joystick: {fileID: 0}
   moveSpeed: 2
+  useCameraBounds: 1
 --- !u!114 &2813143476261935135
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -227,7 +229,7 @@ BoxCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
@@ -241,7 +243,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.64, y: 0.64}
+  m_Size: {x: 0.4, y: 0.5}
   m_EdgeRadius: 0
 --- !u!1 &6188615195296343885
 GameObject:

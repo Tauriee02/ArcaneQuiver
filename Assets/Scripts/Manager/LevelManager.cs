@@ -2,7 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI; // Serve per accedere ai componenti UI (Text, Image, ecc.)
+using UnityEngine.UI;
+using TMPro;
 
 public class LevelManager : MonoBehaviour
 {
@@ -14,8 +15,8 @@ public class LevelManager : MonoBehaviour
 
     
     [SerializeField] private GameObject nextLevelUI;         
-    [SerializeField] private Text enemiesKilledText;           
-    [SerializeField] private Text timeSurvivedText;            
+    [SerializeField] private TMP_Text enemiesKilledText;           
+    [SerializeField] private TMP_Text timeSurvivedText;            
      
 
     private float timeSurvived = 0f;
@@ -37,13 +38,47 @@ public class LevelManager : MonoBehaviour
         SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
-     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        ResetLevelState();
-        
-        ResetUIReferences();
+        string[] gameLevelNames = { "Level1", "Level2", "Level3" };
+        bool isGameLevel = System.Array.Exists(gameLevelNames, levelName => levelName == scene.name);
+
+        if (isGameLevel)
+        {
+            Debug.Log($"🎮 LevelManager: Caricato livello di gioco '{scene.name}'. Inizializzo UI.");
+
+            ResetLevelState();
+
+            switch (scene.name)
+            {
+                case "Level1":
+                    enemiesToKill = 15;
+                    break;
+                case "Level2":
+                    enemiesToKill = 3;
+                    break;
+                case "Level3":
+                    enemiesToKill = 1;
+                    break;
+                default:
+                    enemiesToKill = 15;
+                    break;
+            }
+
+            Debug.Log($"🎯 Obiettivo nemici impostato a {enemiesToKill} per {scene.name}");
+
+            ResetUIReferences();
+        }
+        else
+        {
+            Debug.Log($"ℹ️ LevelManager: '{scene.name}' non è un livello di gioco. Disabilito UI.");
+            nextLevelUI = null;
+            enemiesKilledText = null;
+            timeSurvivedText = null;
+        }
     }
     
+
     private void ResetLevelState()
     {
         enemiesKilled = 0;
@@ -53,50 +88,68 @@ public class LevelManager : MonoBehaviour
 
     private void ResetUIReferences()
     {
+        nextLevelUI = null;
+        enemiesKilledText = null;
+        timeSurvivedText = null;
 
-        
-        if (nextLevelUI == null)
+        GameObject canvas = GameObject.Find("Canvas");
+        if (canvas == null)
         {
-            
-            GameObject canvas = GameObject.Find("Canvas");
-            if (canvas != null)
-            {
-                Transform panel = canvas.transform.Find("NextLevelUI");
-                if (panel != null)
-                {
-                    nextLevelUI = panel.gameObject;
-                    Debug.Log("✅ nextLevelUI trovato in Canvas");
-                }
-            }
+            Debug.LogError("❌ Canvas non trovato nella scena!");
+            return;
         }
 
-        
-        if (nextLevelUI != null)
-        {
-            
-            Text[] texts = nextLevelUI.GetComponentsInChildren<Text>(true);
-            foreach (Text t in texts)
-            {
-                if (t.name == "EnemiesKilledText" && enemiesKilledText == null)
-                {
-                    enemiesKilledText = t;
-                }
-                else if (t.name == "TimeSurvivedText" && timeSurvivedText == null)
-                {
-                    timeSurvivedText = t;
-                }
-            }
-        }
+        string sceneName = SceneManager.GetActiveScene().name;
+        GameObject panel = null;
 
-        
-        if (nextLevelUI == null)
+        if (sceneName == "Level3")
         {
-            Debug.LogError("❌ nextLevelUI non trovato nella scena!");
+            Transform finalPanel = FindInParentsOrChildren(canvas.transform, "FinalLevelUI");
+            if (finalPanel != null)
+            {
+                panel = finalPanel.gameObject;
+                Debug.Log("✅ FinalLevelUI trovato!");
+            }
         }
         else
         {
-            nextLevelUI.SetActive(false); 
+            Transform nextPanel = FindInParentsOrChildren(canvas.transform, "NextLevelUI");
+            if (nextPanel != null)
+            {
+                panel = nextPanel.gameObject;
+                Debug.Log("✅ NextLevelUI trovato!");
+            }
         }
+
+        if (panel != null)
+        {
+            TMP_Text[] texts = panel.GetComponentsInChildren<TMP_Text>(true);
+            foreach (TMP_Text t in texts)
+            {
+                if (t.name == "EnemiesKilledText") enemiesKilledText = t;
+                else if (t.name == "TimeSurvivedText") timeSurvivedText = t;
+            }
+
+            nextLevelUI = panel;
+            nextLevelUI.SetActive(false);
+        }
+        else
+        {
+            Debug.LogError("❌ Nessun pannello UI trovato (né NextLevelUI né FinalLevelUI)!");
+        }
+    }
+
+    private Transform FindInParentsOrChildren(Transform parent, string name)
+    {
+        if (parent.name == name)
+            return parent;
+
+        foreach (Transform child in parent)
+        {
+            Transform found = FindInParentsOrChildren(child, name);
+            if (found != null) return found;
+        }
+        return null;
     }
 
     private void Start()
@@ -134,48 +187,62 @@ public class LevelManager : MonoBehaviour
     public void ShowNextLevelUI()
     {
         Time.timeScale = 0f; 
+        
+        int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
+        int nextLevelIndex = currentSceneIndex + 1;
+
+        if (nextLevelIndex < SceneManager.sceneCountInBuildSettings)
+        {
+            PlayerPrefs.SetInt("NextLevelBuildIndex", nextLevelIndex);
+            PlayerPrefs.Save();
+            Debug.Log($"💾 Prossimo livello salvato: indice {nextLevelIndex}");
+        }
+        else
+        {
+            PlayerPrefs.SetInt("NextLevelBuildIndex", -1);
+            PlayerPrefs.Save();
+        }
+
+        if (nextLevelUI == null || enemiesKilledText == null || timeSurvivedText == null)
+        {
+            ResetUIReferences();
+        }
 
         if (nextLevelUI != null)
         {
             nextLevelUI.SetActive(true);
 
-            
             if (enemiesKilledText != null)
                 enemiesKilledText.text = $"Nemici Uccisi: {enemiesKilled}/{enemiesToKill}";
+            else
+                Debug.LogWarning("⚠️ enemiesKilledText non trovato!");
 
             if (timeSurvivedText != null)
                 timeSurvivedText.text = $"Tempo: {timeSurvived:F1}s";
+            else
+                Debug.LogWarning("⚠️ timeSurvivedText non trovato!");
         }
         else
         {
-            Debug.LogError("nextLevelUI non assegnato in LevelManager!");
+            Debug.LogError("❌ nextLevelUI non assegnato in LevelManager!");
         }
     }
+
 
     
     public void LoadNextLevel()
     {
         Time.timeScale = 1f;
-         PlayerHealth player = FindObjectOfType<PlayerHealth>();
+
+        PlayerHealth player = FindObjectOfType<PlayerHealth>();
         if (player != null)
         {
             player.SaveCurrentHealth();
-            Debug.Log($"💾 Vita salvata prima di andare a LevelSelect: {player.CurrentHealth}/{player.maxHealth}");
         }
-        enemiesKilled = 0;
-        timeSurvived = 0f;
-        levelCompleted = false;
 
-        int nextIndex = SceneManager.GetActiveScene().buildIndex + 1;
+        ResetLevelState();
 
-        if (nextIndex < SceneManager.sceneCountInBuildSettings)
-        {
-            SceneManager.LoadScene("LevelSelect");
-        }
-        else
-        {
-            LoadMainMenu();
-        }
+        SceneManager.LoadScene("LevelSelect");
     }
 
    

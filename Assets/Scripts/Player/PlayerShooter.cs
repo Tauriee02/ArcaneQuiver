@@ -12,6 +12,12 @@ public class PlayerShooter : MonoBehaviour
     private Vector2 lastDirection = Vector2.down;
 
     private Animator anim;
+    private string[] gameScenes = { "Level1", "Level2", "Level3" };
+    private bool IsInGameScene()
+    {
+        string currentScene = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+        return System.Array.Exists(gameScenes, scene => scene == currentScene);
+    }
 
     void Start()
     {
@@ -31,6 +37,9 @@ public class PlayerShooter : MonoBehaviour
 
     void Update()
     {
+        if (!IsInGameScene())
+            return;
+    
         Vector2 moveDir = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
         if (moveDir.magnitude > 0.1f)
         {
@@ -51,6 +60,8 @@ public class PlayerShooter : MonoBehaviour
 
     void Shoot()
     {
+        if (!IsInGameScene()) return;
+
         Vector2 shootDirection = FindDirectionToClosestEnemy();
 
 
@@ -78,31 +89,47 @@ public class PlayerShooter : MonoBehaviour
     Vector2 FindDirectionToClosestEnemy()
     {
         GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
-        float minDistance = Mathf.Infinity;
-        Transform closest = null;
+        GameObject[] bosses = GameObject.FindGameObjectsWithTag("Boss");
+
+        List<Transform> allTargets = new List<Transform>();
 
         foreach (GameObject enemy in enemies)
         {
-            float dist = Vector2.Distance(firePoint.position, enemy.transform.position);
+            allTargets.Add(enemy.transform);
+        }
+
+        foreach (GameObject boss in bosses)
+        {
+            allTargets.Add(boss.transform);
+        }
+
+        if (allTargets.Count == 0)
+        {
+            return lastDirection == Vector2.zero ? Vector2.up : lastDirection;
+        }
+
+        Transform closest = null;
+        float minDistance = Mathf.Infinity;
+
+        foreach (Transform target in allTargets)
+        {
+            float dist = Vector2.Distance(firePoint.position, target.position);
             if (dist < minDistance)
             {
                 minDistance = dist;
-                closest = enemy.transform;
+                closest = target;
             }
         }
 
-        if (closest != null)
-        {
-            return (closest.position - firePoint.position).normalized;
-        }
-
-        return Vector2.right; 
+        return (closest.position - firePoint.position).normalized;
     }
 
 
     IEnumerator DelayedShoot(Vector2 direction, float extraDelay = 0f)
     {
-    yield return new WaitForSeconds(0.3f + extraDelay);
+        yield return new WaitForSeconds(0.3f + extraDelay);
+
+        if (!IsInGameScene()) yield break;
 
         GameObject projectile = Instantiate(projectilePrefab, firePoint.position, Quaternion.identity);
         Projectile projScript = projectile.GetComponent<Projectile>();

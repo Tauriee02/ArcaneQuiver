@@ -7,7 +7,6 @@ public class UpgradeTotem : MonoBehaviour
 {
     [Header("Upgrade Options")]
     public GameObject upgradePanel; 
-    public string nextLevelName = "Level2";
 
     private void OnTriggerEnter2D(Collider2D other)
     {
@@ -54,9 +53,21 @@ public class UpgradeTotem : MonoBehaviour
         ContinueToNextLevel();
     }
 
-    public void ContinueToNextLevel()
+    void ContinueToNextLevel()
     {
         Time.timeScale = 1f;
-        SceneManager.LoadScene(nextLevelName);
+
+        int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
+        int nextSceneIndex = currentSceneIndex + 1;
+
+        if (nextSceneIndex < SceneManager.sceneCountInBuildSettings)
+        {
+            SceneManager.LoadScene(nextSceneIndex);
+            Debug.Log($"✅ Caricato il livello successivo: indice {nextSceneIndex}");
+        }
+        else
+        {
+            SceneManager.LoadScene("MainMenu");
+        }
     }
 }

@@ -8,6 +8,7 @@ public class Projectile : MonoBehaviour
     private Vector2 direction;
     private Vector2 targetDirection;
     private Transform target;
+    public bool isEnemyProjectile = false;
 
     void Start()
     {
@@ -35,19 +36,42 @@ public class Projectile : MonoBehaviour
         direction = dir.normalized;
     }
 
-    void OnTriggerEnter2D(Collider2D collision)
+    private void OnTriggerEnter2D(Collider2D other)
     {
-        if (collision.CompareTag("Enemy"))
+        if (isEnemyProjectile)
         {
-            Enemy enemy = collision.GetComponent<Enemy>();
-            if (enemy != null)
+            if (other.CompareTag("Player"))
             {
-                enemy.Die();
+                PlayerHealth player = other.GetComponent<PlayerHealth>();
+                if (player != null)
+                {
+                    player.TakeDamage();
+                }
+                Destroy(gameObject);
             }
-
-            Destroy(gameObject);
         }
-    }
+        else
+        {
+            if (other.CompareTag("Enemy"))
+            {
+                Enemy enemy = other.GetComponent<Enemy>();
+                if (enemy != null)
+                {
+                    enemy.Die();
+                }
+                Destroy(gameObject);
+            }
+            else if (other.CompareTag("Boss"))
+            {
+                Boss boss = other.GetComponent<Boss>();
+                if (boss != null)
+                {
+                    boss.TakeDamage();
+                }
+                Destroy(gameObject);
+            }
+        }
+}
 
     void OnBecameInvisible()
     {

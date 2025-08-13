@@ -51,6 +51,14 @@ public class Enemy : MonoBehaviour
         
     }
 
+    void OnDestroy()
+    {
+        if (spawner != null)
+        {
+            spawner.EnemyDied();
+        }
+    }
+
     void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.CompareTag("Projectile"))
